@@ -340,7 +340,7 @@ class Player(metaclass = abc.ABCMeta):
         Records the player's side, either 'B' for black or
         'W' for white.  Should also set the name of the player.
         """
-        return
+        self.side = side
 
     @abc.abstractmethod
     def getMove(self, board):
