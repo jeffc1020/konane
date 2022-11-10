@@ -12,10 +12,12 @@ class MinimaxPlayer(Konane, Player):
         #return self.getMoveHelper(board, 0)
         bestMoveValue = self.getMoveHelper(board, 0, self.side)
         availableMoves = self.generateMoves(board, self.side)
-        if (len(availableMoves) == 0): print ("Deez Nuts")
-        for child in availableMoves:
-            if (self.eval(self.nextBoard(board, self.side, child)) == bestMoveValue):
-                return child
+        if (len(availableMoves) == 0):
+            return []
+        else:
+            for child in availableMoves:
+                if (self.eval(self.nextBoard(board, self.side, child)) == bestMoveValue):
+                    return child
         
     def getMoveHelper(self, board, depth, currentTurn):
         if (self.generateMoves(board, currentTurn)): movesAvailable = True
