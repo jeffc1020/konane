@@ -11,14 +11,16 @@ class MinimaxPlayer(Konane, Player):
     def getMove(self, board): # finds the optimal next move
         #return self.getMoveHelper(board, 0)
         bestMoveValue = self.getMoveHelper(board, 0, self.side)
-        for child in self.generateMoves(board, self.side):
-            if (eval(child) == bestMoveValue):
+        availableMoves = self.generateMoves(board, self.side)
+        for child in availableMoves:
+            if (self.eval(self.nextBoard(board, self.side, child)) == bestMoveValue):
                 return child
-        # GET THE BEST MOVE (getMoveHelper just returns the value)
         
     def getMoveHelper(self, board, depth, currentTurn):
-        if (depth == self.limit):
-            return eval(board) # FAILS HERE????????????
+        if (self.generateMoves(board, currentTurn)): movesAvailable = True
+        else: movesAvailable = False
+        if (depth >= self.limit or movesAvailable == False):
+            return self.eval(board)
         if (currentTurn == self.side): # maximizing
             value = -1000000
             for child in self.generateMoves(board, currentTurn):
@@ -66,4 +68,4 @@ class MinimaxPlayer(Konane, Player):
         return self.countSymbol(board, self.side) # should be good for now
         
 game = Konane(8)
-game.playNGames(1, MinimaxPlayer(8, 4), MinimaxPlayer(8, 4), 2)
+game.playNGames(1, MinimaxPlayer(8, 4), MinimaxPlayer(8, 4), 1)
