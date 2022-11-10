@@ -10,29 +10,28 @@ class MinimaxPlayer(Konane, Player):
         self.name = "MinimaxPlayer"
     def getMove(self, board): # finds the optimal next move
         #return self.getMoveHelper(board, 0)
-        return self.getMoveHelper(board, 0, self.side)
-        # moves = self.generateMoves(board, self.side)
-        # # nextboard??
-        # n = len(moves)
-        # if n == 0:
-        #     return []
-        # else:
-        #     for i in moves:
-        #         return
+        bestMoveValue = self.getMoveHelper(board, 0, self.side)
+        for child in self.generateMoves(board, self.side):
+            if (eval(child) == bestMoveValue):
+                return child
+        # GET THE BEST MOVE (getMoveHelper just returns the value)
+        
     def getMoveHelper(self, board, depth, currentTurn):
         if (depth == self.limit):
-            return eval(board)
+            return eval(board) # FAILS HERE????????????
         if (currentTurn == self.side): # maximizing
             value = -1000000
             for child in self.generateMoves(board, currentTurn):
-                value = max(self.getMoveHelper(
-                    self.nextBoard(board, currentTurn, child), depth + 1, self.opponent(self.side)))
+                theNextBoard = self.nextBoard(board, currentTurn, child)
+                nextIteration = self.getMoveHelper(theNextBoard, depth + 1, self.opponent(currentTurn))
+                value = max(value, nextIteration)
             return value
         else: # minimizing
             value = 1000000
             for child in self.generateMoves(board, currentTurn):
-                value = min(self.getMoveHelper(
-                    self.nextBoard(board, currentTurn, child), depth + 1, self.side))
+                theNextBoard = self.nextBoard(board, currentTurn, child)
+                nextIteration = self.getMoveHelper(theNextBoard, depth + 1, self.opponent(currentTurn))
+                value = min(value, nextIteration)
             return value
         
         """
@@ -67,4 +66,4 @@ class MinimaxPlayer(Konane, Player):
         return self.countSymbol(board, self.side) # should be good for now
         
 game = Konane(8)
-game.playNGames(2, MinimaxPlayer(8, 4), MinimaxPlayer(8, 4), 2)
+game.playNGames(1, MinimaxPlayer(8, 4), MinimaxPlayer(8, 4), 2)
