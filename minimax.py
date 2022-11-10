@@ -1,4 +1,3 @@
-from json.encoder import INFINITY
 from konane import *
 
 class MinimaxPlayer(Konane, Player):
@@ -9,14 +8,22 @@ class MinimaxPlayer(Konane, Player):
         self.side = side
         self.name = "MinimaxPlayer"
     def getMove(self, board): # finds the optimal next move
-        #return self.getMoveHelper(board, 0)
         availableMoves = self.generateMoves(board, self.side)
         if (len(availableMoves) == 0):
             return []
         else:
             bestMoveValue = self.getMoveHelper(board, 0, self.side)
             for child in availableMoves:
-                if (self.eval(self.nextBoard(board, self.side, child)) == bestMoveValue):
+                theNextBoard = self.nextBoard(board, self.side, child)
+                print("Move:", child)
+                print("Eval:", self.eval(theNextBoard))
+                print("BestMoveValue:", bestMoveValue)
+                if (self.eval(theNextBoard) == bestMoveValue):
+                    # ^ these should line up for one of the children but they don't!
+                    # what happens is we try to return a blank move but the caller doesn't
+                    # accept that and throws an exception.
+                    # actually what's going on is that getMoveHelper gives the heuristic at a leaf
+                    # node while self.eval(theNextBoard) gives the heuristic at the child
                     return child
         
     def getMoveHelper(self, board, depth, currentTurn):
@@ -43,4 +50,4 @@ class MinimaxPlayer(Konane, Player):
         return self.countSymbol(board, self.side) # should be good for now
         
 game = Konane(8)
-game.playNGames(1, MinimaxPlayer(8, 2), MinimaxPlayer(8, 2), 1)
+game.playNGames(1, MinimaxPlayer(8, 5), RandomPlayer(8), 1)
