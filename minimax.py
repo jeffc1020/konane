@@ -6,25 +6,29 @@ class MinimaxPlayer(Konane, Player):
         self.limit = depthLimit
     def initialize(self, side):
         self.side = side
-        self.name = "MinimaxPlayer"
+        self.name = "Minimax depth: " + str(self.limit)
     def getMove(self, board): # finds the optimal next move
+        print("DepthLimit:", self.limit)
         availableMoves = self.generateMoves(board, self.side)
         if (len(availableMoves) == 0):
             return []
         else:
-            bestMoveValue = self.getMoveHelper(board, 0, self.side)
+            bestMove = (-1000000, [0, 0, 0, 0])
             for child in availableMoves:
                 theNextBoard = self.nextBoard(board, self.side, child)
-                print("Move:", child)
-                print("Eval:", self.eval(theNextBoard))
-                print("BestMoveValue:", bestMoveValue)
-                if (self.eval(theNextBoard) == bestMoveValue):
-                    # ^ these should line up for one of the children but they don't!
-                    # what happens is we try to return a blank move but the caller doesn't
-                    # accept that and throws an exception.
-                    # actually what's going on is that getMoveHelper gives the heuristic at a leaf
-                    # node while self.eval(theNextBoard) gives the heuristic at the child
-                    return child
+                # print("Move:", child)
+                # print("Eval:", self.eval(theNextBoard))
+                # print("BestMoveValue:", bestMoveValue)
+                evalResult = self.getMoveHelper(theNextBoard, 0, self.opponent(self.side))
+                print("Eval:", evalResult)
+                if (evalResult > bestMove[0]):
+                    bestMove = (evalResult, child)
+            return bestMove[1]
+            
+            # what we need to do: 
+                # get the available moves
+                # call getMoveHelper for each of the available moves
+                # pick the move with the lowest eval
         
     def getMoveHelper(self, board, depth, currentTurn):
         if (self.generateMoves(board, currentTurn)): movesAvailable = True
@@ -47,7 +51,7 @@ class MinimaxPlayer(Konane, Player):
             return value
         
     def eval(self, board):
-        return self.countSymbol(board, self.side) # should be good for now
+        return self.countSymbol(board, self.side)
         
-game = Konane(8)
-game.playNGames(1, MinimaxPlayer(8, 5), RandomPlayer(8), 1)
+game = Konane(6)
+game.playNGames(1, MinimaxPlayer(6, 2), MinimaxPlayer(6, 1), 1)
