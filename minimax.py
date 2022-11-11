@@ -51,7 +51,7 @@ class MinimaxPlayer(Konane, Player):
             return value
         
     def eval(self, board):
-        return self.countSymbol(board, self.side)
-        
-game = Konane(6)
-game.playNGames(1, MinimaxPlayer(6, 2), MinimaxPlayer(6, 1), 1)
+        return self.size ** 2 - self.countSymbol(board, self.opponent(self.side))
+
+game = Konane(10)
+game.playNGames(1, MinimaxPlayer(8, 1), MinimaxPlayer(8, 4), 1)
